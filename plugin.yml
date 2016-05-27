@@ -1,0 +1,5 @@
+name: NubesWorldGenerator
+author: NubeBuster
+version: 1.0
+main: com.nubebuster.tc.TerrainControl
+load: STARTUP
