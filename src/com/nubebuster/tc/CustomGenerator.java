@@ -15,16 +15,18 @@ import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 import com.nubebuster.tc.populators.CustomPopulator;
 import com.nubebuster.tc.populators.OrePopulator;
+import com.nubebuster.tc.populators.StructurePopulator;
 
 public class CustomGenerator extends ChunkGenerator {
 
 	private List<BlockPopulator> populators = new ArrayList<BlockPopulator>();
 
 	public CustomGenerator() {
+		populators.add(new StructurePopulator());
 		populators.add(new CustomPopulator());
 		populators.add(new OrePopulator());
 	}
-
+	
 	@Override
 	public boolean canSpawn(World world, int x, int z) {
 		return super.canSpawn(world, x, z);
@@ -45,7 +47,7 @@ public class CustomGenerator extends ChunkGenerator {
 	public byte[][] generateBlockSections(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
 		byte[][] result = new byte[world.getMaxHeight() >> 4][];
 		int blockX = chunkX << 4, blockZ = chunkZ << 4;
-		SimplexOctaveGenerator gen1 = new SimplexOctaveGenerator(world, 8);
+		SimplexOctaveGenerator gen1 = new SimplexOctaveGenerator(world, 16/* 8 */);
 		gen1.setScale(1 / 64.0);
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
@@ -54,17 +56,22 @@ public class CustomGenerator extends ChunkGenerator {
 				int realZ = z + blockZ;
 				double frequency = 0.2;
 				double amplitude = 0.1;
+
+				// PerlinNoiseGenerator png = new PerlinNoiseGenerator(random);
+				Biome biome = biomes.getBiome(x, z);
 				int multitude = 6;
+				if (biome == Biome.COLD_TAIGA)
+					multitude = 12;
+				else if (biome == Biome.SAVANNA || biome == Biome.SWAMPLAND)
+					multitude = 8;
 				int sea_level = 55;
 
 				double maxHeight = gen1.noise(realX, realZ, frequency, amplitude) * multitude + sea_level;
-				// PerlinNoiseGenerator png = new PerlinNoiseGenerator(random);
-				Biome biome = biomes.getBiome(x, z);
 
 				if (biome == Biome.DEEP_OCEAN) {
 					biome = Biome.SWAMPLAND;
 					biomes.setBiome(x, z, Biome.SWAMPLAND);
-				} else if(biome == Biome.OCEAN) {
+				} else if (biome == Biome.OCEAN) {
 					biome = Biome.COLD_TAIGA;
 					biomes.setBiome(x, z, Biome.COLD_TAIGA);
 				}

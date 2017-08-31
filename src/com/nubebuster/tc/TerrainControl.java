@@ -18,8 +18,11 @@ public class TerrainControl extends JavaPlugin {
 	// TODO [water & lava lakes, caves, ores, ravines, mineshafts, pyramids,
 	// village]
 
+	public static TerrainControl inst;
+
 	@Override
 	public void onLoad() {
+		inst = this;
 		clear(new File("world"));
 
 		Field biomesField;
@@ -31,6 +34,7 @@ public class TerrainControl extends JavaPlugin {
 				BiomeBase[] biomes = (BiomeBase[]) biomesField.get(null);
 				for (int i = 0; i < biomes.length; i++)
 					biomes[i] = null;
+				//Replacing biomes for ones I want
 				biomes[BiomeBase.OCEAN.id] = BiomeBase.COLD_TAIGA;
 				biomes[BiomeBase.DEEP_OCEAN.id] = BiomeBase.SWAMPLAND;
 				biomes[BiomeBase.COLD_TAIGA.id] = BiomeBase.COLD_TAIGA;

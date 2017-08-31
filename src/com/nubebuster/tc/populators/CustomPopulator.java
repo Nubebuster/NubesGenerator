@@ -23,24 +23,25 @@ public class CustomPopulator extends BlockPopulator {
 	@Override
 	public void populate(World world, Random random, Chunk source) {
 		int chunkX = source.getX() << 4, chunkZ = source.getZ() << 4;
-		Biome simpleBiome = source.getBlock(0, 0, 0).getBiome();
+		Biome simpleBiome = source.getBlock(8, 0, 8).getBiome();
 		int treeFreq = simpleBiome == Biome.SWAMPLAND || simpleBiome == Biome.DESERT ? 8 : 12;
-		for (int x = 0; x < 16; x++) {
-			for (int z = 0; z < 16; z++) {
-				Biome b = world.getBiome(chunkX + x, chunkZ + z);
-				if (b == Biome.SWAMPLAND && chance(random, 64)) {
-					Material mush = random.nextBoolean() ? Material.BROWN_MUSHROOM : Material.RED_MUSHROOM;
-					if (chance(random, 8)) {
-						int amount = random.nextInt(6) + 10;
-						for (int nr = 0; nr < amount; nr++) {
-							int ttx = chunkX + x + (int) (random.nextGaussian() * 12),
-									ttz = chunkZ + z + (int) (random.nextGaussian() * 12);
-							placePlant(world, ttx, ttz, mush.getId(), (byte) 0);
+		if (simpleBiome == Biome.SWAMPLAND)
+			for (int x = 0; x < 16; x++) {
+				for (int z = 0; z < 16; z++) {
+					Biome b = world.getBiome(chunkX + x, chunkZ + z);
+					if (b == Biome.SWAMPLAND && chance(random, 64)) {
+						Material mush = random.nextBoolean() ? Material.BROWN_MUSHROOM : Material.RED_MUSHROOM;
+						if (chance(random, 8)) {
+							int amount = random.nextInt(6) + 14;
+							for (int nr = 0; nr < amount; nr++) {
+								int ttx = chunkX + x + (int) (random.nextGaussian() * 12),
+										ttz = chunkZ + z + (int) (random.nextGaussian() * 12);
+								placePlant(world, ttx, ttz, mush.getId(), (byte) 0);
+							}
 						}
 					}
 				}
 			}
-		}
 		for (int i = 0; i < random.nextInt(treeFreq); i++) {
 			int x = random.nextInt(16) + chunkX + 1, z = random.nextInt(16) + chunkZ + 1;
 			Biome biome = world.getBiome(x, z);
